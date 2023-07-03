@@ -1,0 +1,57 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "subscriptionId": {
+      "value": "****"
+    },
+    "name": {
+      "value": "farmvibes-backend-test"
+    },
+    "location": {
+      "value": "Central US"
+    },
+    "hostingPlanName": {
+      "value": "ASP-FarmvibesRG-bd8c"
+    },
+    "serverFarmResourceGroup": {
+      "value": "Farmvibes-RG"
+    },
+    "alwaysOn": {
+      "value": true
+    },
+    "ftpsState": {
+      "value": "FtpsOnly"
+    },
+    "sku": {
+      "value": "PremiumV3"
+    },
+    "skuCode": {
+      "value": "P1V3"
+    },
+    "numberOfWorkers": {
+      "value": "1"
+    },
+    "workerSize": {
+      "value": "6"
+    },
+    "workerSizeId": {
+      "value": "6"
+    },
+    "linuxFxVersion": {
+      "value": "DOCKER|mcr.microsoft.com/appsvc/staticsite:latest"
+    },
+    "dockerRegistryUrl": {
+      "value": "https://mcr.microsoft.com"
+    },
+    "dockerRegistryUsername": {
+      "value": ""
+    },
+    "dockerRegistryPassword": {
+      "value": " "
+    },
+    "dockerRegistryStartupCommand": {
+      "value": ""
+    }
+  }
+}

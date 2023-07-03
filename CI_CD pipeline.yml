@@ -1,0 +1,54 @@
+trigger:
+  branches:
+    include:
+      - main  # Change branch as per you branch
+
+resources:
+  - repo: self
+
+variables:
+  - group: angular-app          # Change this variable group as per your variable group name
+  - name: vmImageName
+    value: "ubuntu-latest"
+
+
+stages:
+  # Build and Push
+  - stage: BuildAndPush
+    displayName: Build Application and Push to ACR
+    jobs:
+      - job: BuildAndPush
+        displayName: Build and Push to ACR
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: Docker@2
+            displayName: BuildAndPush
+            inputs:
+              containerRegistry: $(ACR_SVC)
+              command: 'buildAndPush'
+              repository: angular/app
+              Dockerfile: Dockerfile
+              buildContext: .
+              tags: |
+                latest
+
+
+  # Deploy angular demo app to App service
+  - stage: DeployApp
+    displayName: Deploy Demo App
+    dependsOn: BuildAndPush
+
+    jobs:
+      - job: Deploy
+        displayName: Deploy Angular Demo App to Azure App Service
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: AzureWebAppContainer@1
+            inputs:
+              azureSubscription: $(AZURE_RM_SVC)
+              appName: "$(APP_SERVICE_NAME)"
+              containers: "$(AZURE_CONTAINER_REGISTRY).azurecr.io/angular/app:latest"
+              appSettings: |
+                -DOCKER_REGISTRY_SERVER_URL "https://$(AZURE_CONTAINER_REGISTRY).azurecr.io" -DOCKER_REGISTRY_SERVER_USERNAME "$(AZURE_CONTAINER_REGISTRY)" -DOCKER_REGISTRY_SERVER_PASSWORD "$(DOCKER_REGISTRY_SERVER_PASSWORD)"

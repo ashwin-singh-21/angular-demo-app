@@ -1,0 +1,58 @@
+# Create Infrastructure pipeline
+
+trigger:
+  branches:
+    include:
+      - main       # Change branch name as per you branch
+  paths:
+    include:
+      - ARM-Templates/*
+
+variables:
+  - name: vmImageName
+    value: "ubuntu-latest"
+  - group: angular-app                 # Change this variable group name as per your variable group
+
+
+stages:
+  - stage: AcrSetup
+    displayName: Azure Container Registry Setup
+    jobs:
+      - job: AcrSetup
+        displayName: Azure Container Registry Setup
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: $(AZURE_RM_SVC)
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: $(RESOURCE_GROUP)
+              location: $(LOCATION)
+              templateLocation: 'Linked artifact'
+              csmFile: '$(System.DefaultWorkingDirectory)/**/acr-template.json'
+              csmParametersFile: '$(System.DefaultWorkingDirectory)/**/acr-parameters.json'
+              overrideParameters: '-registryName "$(AZURE_CONTAINER_REGISTRY)" -registryLocation "$(LOCATION)" -registrySku standard'
+              deploymentMode: 'Incremental'
+
+  - stage: AppServiceSetup
+    displayName: Azure App Service Setup
+    jobs:
+      - job: AppServiceSetup
+        displayName: Azure App Service Setup
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: $(AZURE_RM_SVC)
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: $(RESOURCE_GROUP)
+              location: $(LOCATION)
+              templateLocation: 'Linked artifact'
+              csmFile: '$(System.DefaultWorkingDirectory)/**/app-service-template.json'
+              csmParametersFile: '$(System.DefaultWorkingDirectory)/**/app-service-parameters.json'
+              overrideParameters: '-name "$(APP_SERVICE_NAME)" -subscriptionId "$(SUBSCRIPTION_ID)" -serverFarmResourceGroup "$(RESOURCE_GROUP)" -location "$(LOCATION)" -hostingPlanName "ASP-$(RESOURCE_GROUP)-befd8c" -numberOfWorkers "2" '
+
