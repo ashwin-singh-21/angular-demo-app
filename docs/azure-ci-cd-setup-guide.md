@@ -51,9 +51,62 @@ Before you create the pipeline, you should first create a Service Connection sin
 ![image](https://github.com/ashwin-singh-21/angular-demo-app/assets/69102413/030f1ebe-ec7a-4201-8a0c-f62f532229f8)
 
 * Finally, save and run the pipeline. Check pipeline logs and permit for variable group access if asked. 
-* Once the IAC-pipeline run successfully, verify the resources are created within a resource group by signing in [Azure Portal](https://portal.azure.com/#home). 
+
+![image](https://github.com/ashwin-singh-21/angular-demo-app/assets/69102413/d39d3a84-5ad2-49b2-a5d7-3e71a40584fb)
+
+* Once the IAC-pipeline run successfully, you can see the pipeline logs.
+
+![image](https://github.com/ashwin-singh-21/angular-demo-app/assets/69102413/8355d232-efe5-44c7-973d-7b5a576c47f4)
+
+* Now verify the resources are created within a resource group by signing in [Azure Portal](https://portal.azure.com/#home). 
 * Search Container Registry and select your container registry from the list. On left-hand menu select access keys then copy the `Password`. </br>
 
+![image](https://github.com/ashwin-singh-21/angular-demo-app/assets/69102413/db57eb6f-aa9a-4904-8f1a-9f659e42a04c)
 
-Add a variable named `DOCKER_REGISTRY_SERVER_PASSWORD` in variable group (created in earlier steps) and save the copied password as value.
+* Add a variable named `DOCKER_REGISTRY_SERVER_PASSWORD` in variable group (created in earlier steps) and save the copied password as value.
+
+## Create the CI/CD Pipeline
+
+Before we set up the continuous build and deploy (CI/CD pipeline) we will need to add the Azure Container Registry as a service connection in Azure DevOps. This service connection will be used in the build and deploy pipelines. Use the following steps to create container registry service connection: </br>
+
+* Go to [Azure DevOps](https://dev.azure.com), navigate to ORGANIZATION NAME > PROJECTNAME >Project Settings > Service connections*
+* Click Create service connection.
+* Select Docker Registry.
+
+![image](https://github.com/ashwin-singh-21/angular-demo-app/assets/69102413/ba89b5f5-9128-4b00-a024-634ec773db23)
+
+* On next screen select Azure Container Registry. Authentication Type as `Service Principal`, then choose your subscription, and the ACR you have created recently.
+* Add name of service connection, check the security box and click save. 
+
+![image](https://github.com/ashwin-singh-21/angular-demo-app/assets/69102413/85fc292e-6c48-4110-8d9e-496bcb925e3d)
+
+* Now add a variable `ACR_SVC` having value as container registry service connection name (created in above step), in the previously created variable group.
+
+* Now set up the CI/CD pipeline. On the left menu bar go to Pipelines and click the Create Pipeline button.
+* The next screen will ask you where the code is to create the pipeline from, so choose  GitHub and select your repository. </br>
+* Next choose the Existing Azure Pipelines YAML file option. Select the branch and locate the CI_CD pipeline.yml file. Now make sure to change the branch name as per your GitHub branch and variable group. Then save and run the pipeline.
+
+![image](https://github.com/ashwin-singh-21/angular-demo-app/assets/69102413/4f351e49-5878-45e6-bd65-e926c5efd609)
+
+* From here you are ready to continuously build and deploy your application through Azure DevOps. You can verify pipeline runs and logs.
+
+![image](https://github.com/ashwin-singh-21/angular-demo-app/assets/69102413/4e43cd02-23f6-4499-aa99-3d912ad18589)
+
+* Again permit the the pipeline if asked.
+![image](https://github.com/ashwin-singh-21/angular-demo-app/assets/69102413/6dd19d04-ce2a-4e4d-9d81-8df41a67321d)
+
+* Once the CI CD pipeline run successfully you can see the following logs.
+
+![image](https://github.com/ashwin-singh-21/angular-demo-app/assets/69102413/43aba6a8-9052-4d42-a1da-0c476e022dad)
+
+* Now you can explore the deployed application.
+
+![image](https://github.com/ashwin-singh-21/angular-demo-app/assets/69102413/9b762a56-f63a-4f06-b4af-f9161d9af360)
+
+
+
+
+
+
+
 
