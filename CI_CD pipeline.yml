@@ -28,8 +28,8 @@ stages:
               containerRegistry: $(ACR_SVC)
               command: 'buildAndPush'
               repository: angular/app
-              Dockerfile: Dockerfile
-              buildContext: .
+              Dockerfile: $(Build.SourcesDirectory)/Dockerfile
+              buildContext: $(Build.SourcesDirectory)
               tags: |
                 latest
 
